@@ -43,6 +43,9 @@ export const typeDefs = `
         name: String
         email: String
         password: String
+        role: String
+        Applicant:ApplicantInput
+        Contractor:ContractorInput
     }
 
     input ApplicantInput {

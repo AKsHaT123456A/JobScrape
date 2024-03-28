@@ -1,6 +1,5 @@
-import { passHash } from "../utils/passHash";
 import { query } from "../utils/queryUtils";
-import { Applicant } from "../utils/type";
+import { Applicant } from "../types/type";
 
 export const getApplicants = async (): Promise<Applicant[]> => {
   try {
@@ -25,33 +24,20 @@ export const createApplicant = async (
         workexperience,
         appliedposition,
         status,
-        password,
         subscribed,
+        user_id
       } = newApplicant;
   
-      // Start a transaction
       await query("BEGIN");
   
-      // Insert data into the users table
-      const userQuery = `
-          INSERT INTO users (username, email,password) 
-          VALUES ($1, $2,$3)
-          RETURNING id;
-        `;
-      const hashPassword = await passHash(password);
   
-      const userValues = [name, email, hashPassword];
-      const userResult = await query(userQuery, userValues);
-      const userId = userResult.rows[0].id;
-  
-      // Insert data into the applicants table with the userId as a foreign key
       const applicantQuery = `
           INSERT INTO applicants (user_id, name, email, phone, skills, experienceyears, workexperience, appliedposition, status, subscribed)
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
           RETURNING *;
         `;
       const applicantValues = [
-        userId,
+        user_id,
         name,
         email,
         phone,
@@ -63,14 +49,9 @@ export const createApplicant = async (
         subscribed,
       ];
       const applicantResult = await query(applicantQuery, applicantValues);
-  
-      // Commit the transaction
-      await query("COMMIT");
-  
-      // Return the newly created applicant
-      return applicantResult.rows[0];
+        await query("COMMIT");
+        return applicantResult.rows[0];
     } catch (error) {
-      // Rollback the transaction if an error occurs
       await query("ROLLBACK");
       throw new Error(`Error creating applicant: ${error}`);
     }

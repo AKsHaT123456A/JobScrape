@@ -2,13 +2,13 @@ import {
   createUser,
   getAllUsers,
   getUsersById,
-} from "../controllers/authcontroller";
+} from "../controllers/auth.controller";
 import {
   createApplicant,
   getApplicants,
   getApplicantById,
 } from "../controllers/applicant.controller";
-import { Applicant, Contractor } from "../utils/type";
+import { Applicant, Contractor } from "../types/type";
 import { createContractor } from "../controllers/contractor.controller";
 
 export const resolvers = {
@@ -30,10 +30,10 @@ export const resolvers = {
   Mutation: {
     createUser: (
       parent: any,
-      args: { input: { name: string; email: string; password: string } },
+      args: { input: any},
       context: any,
       info: any
-    ) => createUser(args.input.name, args.input.email, args.input.password),
+    ) => createUser(args.input.name, args.input.email, args.input.password,args.input.role,args.input.Applicant,args.input.Contractor),
     createApplicant: (
       parent: any,
       args: { input: Applicant },

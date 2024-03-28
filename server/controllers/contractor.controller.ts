@@ -1,5 +1,5 @@
 import { query } from "../utils/queryUtils";
-import { Contractor } from "../utils/type";
+import { Contractor } from "../types/type";
 
 export async function createContractor(contractorData: Contractor) {
   try {

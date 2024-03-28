@@ -9,6 +9,7 @@ export interface Applicant {
   workexperience: string;
   appliedposition: string;
   status: string;
+  role:string;
   password: string;
   subscribed: boolean;
 }

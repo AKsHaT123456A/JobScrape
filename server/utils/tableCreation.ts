@@ -13,14 +13,23 @@ export const createTables = async (tableQueries: string[]): Promise<void> => {
 export const tableCreation = async (): Promise<void> => {
   const tableQueries = [
     `
-        CREATE TABLE IF NOT EXISTS users (
-          id SERIAL PRIMARY KEY,
-          username VARCHAR(255) NOT NULL,
-          email VARCHAR(255) UNIQUE NOT NULL,
-          password VARCHAR(255) NOT NULL,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-      `,
+    DO $$
+    BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+            CREATE TYPE user_role AS ENUM ('admin', 'contractor', 'applicant', 'unskilled');
+        END IF;
+    END $$;
+    `,
+    `
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(255) NOT NULL,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password VARCHAR(255) NOT NULL,
+      role user_role NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    `,
     `CREATE TABLE IF NOT EXISTS contractors (
         id SERIAL PRIMARY KEY,
         user_id INT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
@@ -48,6 +57,13 @@ export const tableCreation = async (): Promise<void> => {
           subscribed BOOLEAN NOT NULL
         );
       `,
+      `
+      CREATE TABLE IF NOT EXISTS unskilled (
+        id SERIAL PRIMARY KEY,
+        user_id INT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+        phone VARCHAR(20) UNIQUE NOT NULL
+    );    
+      `
   ];
 
   await createTables(tableQueries);
