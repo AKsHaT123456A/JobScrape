@@ -132,11 +132,11 @@ export const login = async(input:Login):Promise<any>=>{
     const result  = await query(queries,[input.email]);
     const user = result.rows[0];
     if(!user) throw new Error(`Could not find`);
-    // if(!checkPassword(input.password,user.password)){
-    //   throw new Error(`Invalid password`);
-    // }else{
-      // }
-        return {token: generateToken(user.id,"applicant")};
+    if(!checkPassword(input.password,user.password)){
+      throw new Error(`Invalid password`);
+    }else{
+      return {token: generateToken(user.id,"applicant")};
+    }
   } catch (error) {
     console.error('Login failed:', error);
     throw new Error('Login failed');
