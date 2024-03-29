@@ -12,6 +12,7 @@ export const typeDefs = `
         createUser(input: UserInput): User
         createApplicant(input: ApplicantInput): Applicant  
         createContractor(input:ContractorInput):Contractor
+        login(input: LoginUserInput):AuthPayload!
     }
     
     type ApiStatus {
@@ -81,5 +82,15 @@ export const typeDefs = `
         location: String
         pincode: String
         description: String
+      }
+
+      input LoginUserInput {
+        email: String
+        password: String
+      }
+
+      type AuthPayload{
+        token: String!
+        user: String!
       }
 `;

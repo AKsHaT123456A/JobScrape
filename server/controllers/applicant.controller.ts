@@ -1,5 +1,7 @@
 import { query } from "../utils/queryUtils";
-import { Applicant } from "../types/type";
+import { Applicant,Login } from "../types/type";
+import { checkPassword } from "../utils/passHash";
+import { generateToken } from "../utils/jwtFunctions";
 
 export const getApplicants = async (): Promise<Applicant[]> => {
   try {
@@ -122,3 +124,21 @@ export const updateApplicant = async (
     throw new Error(`Error updating applicant: ${error}`);
   }
 };
+
+
+export const login = async(input:Login):Promise<any>=>{
+  try {
+    const queries = "Select * from applicants where email = $1";
+    const result  = await query(queries,[input.email]);
+    const user = result.rows[0];
+    if(!user) throw new Error(`Could not find`);
+    // if(!checkPassword(input.password,user.password)){
+    //   throw new Error(`Invalid password`);
+    // }else{
+      // }
+        return {token: generateToken(user.id,"applicant")};
+  } catch (error) {
+    console.error('Login failed:', error);
+    throw new Error('Login failed');
+  }
+}

@@ -7,8 +7,9 @@ import {
   createApplicant,
   getApplicants,
   getApplicantById,
+  login,
 } from "../controllers/applicant.controller";
-import { Applicant, Contractor } from "../types/type";
+import { Applicant, Contractor,Login } from "../types/type";
 import { createContractor } from "../controllers/contractor.controller";
 
 export const resolvers = {
@@ -46,5 +47,6 @@ export const resolvers = {
       context: any,
       info: any
     ) => createContractor(args.input),
+    login:(_:any,args: { input: Login },context:any,info:any)=> login(args.input),
   },
 };
