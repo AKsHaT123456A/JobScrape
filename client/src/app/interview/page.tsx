@@ -9,21 +9,13 @@ declare global {
     webkitSpeechRecognition: any;
   }
 }
-
-// Export the MicrophoneComponent function component
 export default function MicrophoneComponent() {
-  // State variables to manage recording status, completion, and transcript
   const [isRecording, setIsRecording] = useState(false);
   const [recordingComplete, setRecordingComplete] = useState(false);
   const [transcript, setTranscript] = useState("");
-
-  // Reference to store the SpeechRecognition instance
   const recognitionRef = useRef<any>(null);
-
-  // Function to start recording
   const startRecording = () => {
     setIsRecording(true);
-    // Create a new SpeechRecognition instance and configure it
     recognitionRef.current = new window.webkitSpeechRecognition();
     recognitionRef.current.continuous = true;
     recognitionRef.current.interimResults = true;
@@ -33,31 +25,21 @@ export default function MicrophoneComponent() {
       console.log(transcript);
       setTranscript(transcript);
     };
-
-    // Start the speech recognition
     recognitionRef.current.start();
   };
-
-  // Cleanup effect when the component unmounts
   useEffect(() => {
     return () => {
-      // Stop the speech recognition if it's active
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
     };
   }, []);
-
-  // Function to stop recording
   const stopRecording = () => {
     if (recognitionRef.current) {
-      // Stop the speech recognition and mark recording as complete
       recognitionRef.current.stop();
       setRecordingComplete(true);
     }
   };
-
-  // Toggle recording state and manage recording actions
   const handleToggleRecording = () => {
     setIsRecording(!isRecording);
     if (!isRecording) {
@@ -66,8 +48,6 @@ export default function MicrophoneComponent() {
       stopRecording();
     }
   };
-
-  // Render the microphone component with appropriate UI based on recording state
   return (
     <div className="flex items-center justify-center h-screen w-full">
       <div className="w-full">
