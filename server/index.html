@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speaker Identification</title>
+<style>
+  #output {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 100px;
+  }
+</style>
+</head>
+<body>
+<h1>Speaker Identification</h1>
+<button id="startButton">Start Recording</button>
+<div id="output"></div>
+
+<script>
+const outputDiv = document.getElementById('output');
+const startButton = document.getElementById('startButton');
+
+startButton.addEventListener('click', () => {
+  startButton.disabled = true;
+  outputDiv.innerHTML = 'Recording...';
+
+  const socket = new WebSocket('ws://localhost:3000'); // WebSocket connection to the Node.js server
+
+  socket.onopen = () => {
+    console.log('Connected to server');
+  };
+
+  socket.onerror = error => {
+    console.error('WebSocket error:', error);
+  };
+
+  socket.onmessage = event => {
+    const data = JSON.parse(event.data);
+    if (data.transcript) {
+      outputDiv.innerHTML = `Transcription: ${data.transcript}`;
+    } else {
+      outputDiv.innerHTML = 'No transcription available';
+    }
+  };
+
+  socket.onclose = () => {
+    console.log('Connection closed');
+    startButton.disabled = false;
+  };
+});
+</script>
+</body>
+</html>
