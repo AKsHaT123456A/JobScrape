@@ -24,3 +24,8 @@ export interface Contractor {
   pincode?: string;
   description?: string;
 }
+
+export interface Login {
+  email:string;
+  password: string;
+}
